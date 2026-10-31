@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autocontrol de la planilla de redeterminación</title>
+<meta name="description" content="Controlá la planilla de redeterminación de precios antes de presentarla. Todo corre en tu navegador: el Excel no se envía a ningún lado.">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header class="topbar">
+  <a href="./" class="marca">✅ Autocontrol de la planilla de redeterminación</a>
+  <nav><a href="#ayuda">¿Qué controla?</a></nav>
+</header>
+<main>
+  <section id="vista-inicio">
+    <h1>Controlá tu planilla antes de presentarla</h1>
+    <p class="subtitulo">Subí el Excel de la redeterminación: se revisa lo mismo que revisa el organismo (los índices contra el
+      boletín del INDEC, la variación de referencia, el análisis de precios y la planilla de costos) y te dice si está todo
+      bien o qué celdas hay que corregir. <b>Todo corre en tu navegador: el Excel no se envía a ningún lado.</b></p>
+
+    <div class="tarjeta">
+      <form id="form-excel">
+        <label>Excel de la redeterminación (.xlsx, .xls)</label>
+        <input type="file" name="excel" accept=".xlsx,.xlsm,.xls" required>
+        <details class="desplegable" style="margin-top:12px">
+          <summary>Opcional: comparar con la redeterminación anterior ya aprobada</summary>
+          <p class="campo-ayuda" style="margin-top:8px">Si la subís, también se controla que los precios de partida y el anticipo
+            sigan la cadena desde la redeterminación anterior.</p>
+          <input type="file" name="anterior" accept=".xlsx,.xlsm,.xls">
+        </details>
+        <div style="margin-top:16px"><button type="submit" id="btn-controlar">Controlar la planilla →</button></div>
+      </form>
+    </div>
+
+    <div id="paso-boletines" class="tarjeta" hidden>
+      <h3 style="margin-top:0">Faltan boletines del INDEC</h3>
+      <p>Tu planilla usa índices de meses que todavía no están cargados:</p>
+      <ul id="lista-faltan"></ul>
+      <p class="campo-ayuda">Bajá el PDF del «INDEC Informa» de la página del INDEC y subilo acá (podés elegir varios a la vez).
+        Queda guardado en este navegador para la próxima. Si no lo tenés, podés controlar igual: esos meses no se comparan
+        con los índices oficiales.</p>
+      <input type="file" id="pdfs" accept=".pdf" multiple>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
+        <button type="button" onclick="subirBoletinesYControlar()">Subir los boletines y controlar →</button>
+        <button type="button" class="secundario" onclick="analizar()">Controlar igual, sin esos meses</button>
+      </div>
+    </div>
+
+    <div id="progreso"></div>
+
+    <div class="tarjeta control-ayuda" id="ayuda">
+      <b>¿Qué controla?</b>
+      <ul>
+        <li><b>Ítems INDEC:</b> cada código de la hoja de índices contra el valor publicado por el INDEC para ese mes.</li>
+        <li><b>VAR:</b> los índices de la variación de referencia.</li>
+        <li><b>Análisis de precios:</b> índices de cada insumo, coeficientes, precios actualizados y anticipo financiero.</li>
+        <li><b>Planilla de costos:</b> precio de cada ítem contra su análisis, parciales, subtotales, gastos, beneficio e impuestos.</li>
+      </ul>
+      <p class="campo-ayuda" style="margin:0" id="info-boletines">Cargando la lista de boletines…</p>
+      <details class="desplegable" style="margin-top:10px" id="det-mis-boletines" hidden>
+        <summary>Boletines que subiste en este navegador</summary>
+        <div id="mis-boletines" style="margin-top:8px"></div>
+      </details>
+    </div>
+  </section>
+
+  <section id="vista-resultado" hidden></section>
+</main>
+<footer>Copyright (c) 2026 Juan Ignacio Fernandez. Todos los derechos reservados.</footer>
+<script src="app.js"></script>
+</body>
+</html>
