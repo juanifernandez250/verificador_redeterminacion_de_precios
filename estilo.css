@@ -700,3 +700,14 @@ details.bitacora summary { margin-top: 24px; }
 .fila-boletin { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 4px 0; border-bottom: 1px solid #eef1f4; font-size: 0.9em; }
 .desplegable-tarjeta > summary { cursor: pointer; }
 .migas .link-boton { font-size: 0.9em; }
+
+/* contador de planillas controladas */
+.contador { background: white; border: 1px solid #dfe6ee; border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
+.contador-titulo { font-weight: 600; color: var(--azul); margin-bottom: 10px; }
+.contador-cifras { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.cifra { background: #f6f8fa; border-radius: 8px; padding: 10px 8px; text-align: center; }
+.cifra b { display: block; font-size: 1.6em; color: var(--azul); font-variant-numeric: tabular-nums; }
+.cifra span { font-size: 0.85em; color: #555; }
+.cifra-ok b { color: #2e7d32; } .cifra-error b { color: #c62828; } .cifra-aviso b { color: #b26a00; }
+.contador-nota { font-size: 0.8em; color: #888; margin-top: 8px; }
+@media (max-width: 560px) { .contador-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

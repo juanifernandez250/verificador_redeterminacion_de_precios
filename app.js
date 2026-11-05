@@ -1,5 +1,5 @@
 /* app.js — pantalla del autocontrol. El trabajo pesado lo hace worker.js (Python en el navegador). */
-const VERSION = '2026-10-31';
+const VERSION = '2026-11-05';
 const trabajador = new Worker('worker.js?v=' + VERSION);
 let pedidos = 0;
 const esperando = {};
@@ -117,6 +117,7 @@ $('#form-excel').addEventListener('submit', async (ev) => {
     mostrarProgreso('Preparando…');
     await listo;
     const excel = await leerArchivo(ev.target.excel);
+    HUELLA = await huella(excel.datos);           // antes de mandarlo al trabajador (después ya no se puede leer)
     const anterior = await leerArchivo(ev.target.anterior);
     mostrarProgreso('Leyendo la planilla…');
     const transferir = [excel.datos].concat(anterior ? [anterior.datos] : []);
@@ -183,7 +184,76 @@ async function analizar() {
     res.segundos_total = Math.round((performance.now() - t0) / 1000);
     ocultarProgreso();
     mostrarResultado(res);
+    contar(categoria(res.veredicto));
   } catch (e) { mostrarError(e.message); }
+}
+
+/* ---------- contador de planillas controladas ----------
+   Local: en este navegador (localStorage). General: si config.js trae CONTADOR_URL (Google Apps Script), se manda
+   SOLO el resultado (ok / errores / avisos) y una huella del archivo para no contar dos veces el mismo; nunca el Excel. */
+let HUELLA = '';
+const URL_CONTADOR = (window.CONTADOR_URL || '').trim();
+
+async function huella(buf) {
+  try {
+    const h = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(h)).slice(0, 8).map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) { return ''; }
+}
+
+function categoria(v) {
+  if (v.clase === 'error') return 'errores';
+  if (v.clase === 'menor' || v.clase === 'parcial' || (v.n && v.n.AVISO)) return 'avisos';
+  return 'ok';
+}
+
+function leerLocal() {
+  try { return Object.assign({ ok: 0, errores: 0, avisos: 0, vistos: [] }, JSON.parse(localStorage.getItem('contador') || '{}')); }
+  catch (e) { return { ok: 0, errores: 0, avisos: 0, vistos: [] }; }
+}
+
+function pintarContador(t, general) {
+  if (!t) return;
+  const total = t.total ?? ((t.ok || 0) + (t.errores || 0) + (t.avisos || 0));
+  const fmt = (n) => Number(n || 0).toLocaleString('es-AR');
+  $('#c-total').textContent = fmt(total);
+  $('#c-ok').textContent = fmt(t.ok);
+  $('#c-errores').textContent = fmt(t.errores);
+  $('#c-avisos').textContent = fmt(t.avisos);
+  $('#contador-titulo').textContent = general ? 'Planillas controladas con esta página' : 'Planillas controladas en este navegador';
+  $('#contador-nota').textContent = general
+    ? 'Para este contador se envía solo el resultado (OK, con errores o con avisos). El Excel no sale de tu computadora.'
+    : 'Se cuenta cada planilla distinta que controlaste en este navegador.';
+  $('#contador').hidden = false;
+}
+
+async function totalesGenerales(params) {
+  if (!URL_CONTADOR) return null;
+  try {
+    const r = await fetch(URL_CONTADOR + (params ? '?' + new URLSearchParams(params) : ''), { cache: 'no-store' });
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+
+async function contar(cat) {
+  const l = leerLocal();
+  const clave = cat + ':' + HUELLA;
+  if (!HUELLA || !l.vistos.includes(clave)) {          // la misma planilla con el mismo resultado no suma dos veces
+    l[cat] = (l[cat] || 0) + 1;
+    if (HUELLA) l.vistos = l.vistos.concat(clave).slice(-500);
+    try { localStorage.setItem('contador', JSON.stringify(l)); } catch (e) { /* navegador sin almacenamiento */ }
+  }
+  const g = await totalesGenerales({ r: cat, h: HUELLA, v: VERSION });
+  pintarContador(g || l, !!g);
+}
+
+async function iniciarContador() {
+  const g = await totalesGenerales(null);
+  if (g) pintarContador(g, true);
+  else {
+    const l = leerLocal();
+    if (l.ok + l.errores + l.avisos > 0) pintarContador(l, false);   // vacío y sin contador general: no se muestra
+  }
 }
 
 /* ---------- resultado ---------- */
@@ -271,5 +341,6 @@ function volver() {
     INDICE = r.ok ? (await r.json()).anexos : [];
   } catch (e) { INDICE = []; }
   pintarInfoBoletines();
+  iniciarContador();
   listo = pedir('iniciar', {}).catch(e => { mostrarError('No se pudo cargar el programa en este navegador: ' + e.message); throw e; });
 })();

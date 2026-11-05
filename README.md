@@ -32,6 +32,12 @@ El archivo `.nojekyll` tiene que subirse también (hace que GitHub sirva los arc
    mismo y queda guardado **en su navegador** para la próxima.
 4. Ve el resultado (OK / errores, celda por celda) y baja el PDF o su Excel con las celdas marcadas.
 
+## Contador de planillas controladas
+
+Arriba de la página se ve cuántas planillas se controlaron: total, OK, con errores y con avisos. Sin configurar nada
+cuenta las de cada navegador; para el total de todas las empresas se conecta a una planilla de Google: ver
+[CONTADOR.md](CONTADOR.md) (se pega una dirección en `config.js`). Al contador se envía solo el resultado, nunca el Excel.
+
 ## Mantenimiento
 
 - **Boletines incluidos** (`anexos/`): diciembre 2024 a agosto 2026. Los meses nuevos los puede subir cada empresa

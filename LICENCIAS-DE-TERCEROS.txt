@@ -1,0 +1,21 @@
+LICENCIAS DE LOS COMPONENTES DE TERCEROS INCLUIDOS EN ESTA PÁGINA
+=================================================================
+Esta página incluye, sin modificaciones, los siguientes componentes de software libre. Cada uno conserva su
+propia licencia, independiente de la licencia del resto del repositorio.
+
+Componente                     Carpeta / archivo                      Licencia
+-----------------------------  -------------------------------------  ------------------------------------------
+Pyodide 0.27.2 (Python para    pyodide/                               Mozilla Public License 2.0
+  navegador) y CPython 3.12                                           (CPython: Python Software Foundation License)
+                                                                      https://github.com/pyodide/pyodide
+cryptography, cffi, pycparser, pyodide/*.whl                          Apache-2.0 / BSD / MIT (ver cada paquete)
+  Pillow, charset-normalizer,                                         (Pillow: MIT-CMU; OpenSSL: Apache-2.0)
+  six, xlrd, OpenSSL
+openpyxl 3.1.5                 wheels/openpyxl-*.whl                  MIT
+et_xmlfile 2.0.0               wheels/et_xmlfile-*.whl                MIT
+pdfminer.six 20260107          wheels/pdfminer_six-*.whl              MIT
+pdfplumber 0.11.10             wheels/pdfplumber-*.whl                MIT
+ReportLab 5.0.1                wheels/reportlab-*.whl                 BSD (ReportLab Inc.)
+
+El texto completo de cada licencia está dentro de cada paquete (.whl, carpeta *.dist-info) y en el sitio de cada
+proyecto. Los índices de anexos/ son datos públicos del INDEC (INDEC Informa, Anexo de obra pública).
