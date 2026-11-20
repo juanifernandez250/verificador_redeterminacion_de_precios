@@ -35,9 +35,11 @@
         <label>Excel de la redeterminación (.xlsx, .xls)</label>
         <input type="file" name="excel" accept=".xlsx,.xlsm,.xls" required>
         <details class="desplegable" style="margin-top:12px">
-          <summary>Opcional: comparar con la redeterminación anterior ya aprobada</summary>
-          <p class="campo-ayuda" style="margin-top:8px">Si la subís, también se controla que los precios de partida y el anticipo
-            sigan la cadena desde la redeterminación anterior.</p>
+          <summary>Si es una R2 o posterior: subí también el Excel de la redeterminación anterior (la aprobada)</summary>
+          <p class="campo-ayuda" style="margin-top:8px">Con ese archivo también se controla que esta planilla parta de los precios
+            de la redeterminación anterior: el precio de cada ítem y el total de la planilla de costos, y <b>todos</b> los análisis
+            de precios, renglón por renglón. Es obligatorio partir de los de la redeterminación anterior aprobada. Sin ese archivo,
+            ese control no se hace.</p>
           <input type="file" name="anterior" accept=".xlsx,.xlsm,.xls">
         </details>
         <div style="margin-top:16px"><button type="submit" id="btn-controlar">Controlar la planilla →</button></div>
@@ -67,6 +69,8 @@
         <li><b>VAR:</b> los índices de la variación de referencia.</li>
         <li><b>Análisis de precios:</b> índices de cada insumo, coeficientes, precios actualizados y anticipo financiero.</li>
         <li><b>Planilla de costos:</b> precio de cada ítem contra su análisis, parciales, subtotales, gastos, beneficio e impuestos.</li>
+        <li><b>Redeterminación anterior</b> (si subís su Excel): los precios de partida de la planilla de costos y todos los
+          análisis de precios tienen que ser los mismos que los de la redeterminación anterior aprobada.</li>
       </ul>
       <p class="campo-ayuda" style="margin:0" id="info-boletines">Cargando la lista de boletines…</p>
       <details class="desplegable" style="margin-top:10px" id="det-mis-boletines" hidden>

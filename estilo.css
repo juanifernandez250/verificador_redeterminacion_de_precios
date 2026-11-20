@@ -711,3 +711,11 @@ details.bitacora summary { margin-top: 24px; }
 .cifra-ok b { color: #2e7d32; } .cifra-error b { color: #c62828; } .cifra-aviso b { color: #b26a00; }
 .contador-nota { font-size: 0.8em; color: #888; margin-top: 8px; }
 @media (max-width: 560px) { .contador-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* detalle de los análisis de precios distintos a los de la redeterminación anterior */
+.analisis-lista { margin: 8px 0; }
+.analisis-item { border: 1px solid var(--borde); border-radius: 8px; padding: 6px 10px; margin: 6px 0; }
+.analisis-item > summary { cursor: pointer; }
+.analisis-item .tabla-celdas td[rowspan] { vertical-align: top; }
+.analisis-item > summary { padding: 4px 0; color: var(--texto, #1f2937); }
+.analisis-item[open] > summary { border-bottom: 1px solid var(--borde); margin-bottom: 6px; }

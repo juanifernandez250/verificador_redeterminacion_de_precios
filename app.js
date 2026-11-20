@@ -1,5 +1,5 @@
 /* app.js — pantalla del autocontrol. El trabajo pesado lo hace worker.js (Python en el navegador). */
-const VERSION = '2026-11-05';
+const VERSION = '2026-11-20';
 const trabajador = new Worker('worker.js?v=' + VERSION);
 let pedidos = 0;
 const esperando = {};
@@ -257,6 +257,20 @@ async function iniciarContador() {
 }
 
 /* ---------- resultado ---------- */
+// «Análisis de precios que no parten de los de la redeterminación anterior»: cada ítem se abre y muestra qué renglón cambió
+function detalleAnalisis(lista) {
+  return `<div class="analisis-lista">${lista.map(a => `<details class="analisis-item">
+    <summary><b>Ítem ${esc(a.item)}</b> ${esc(a.desc)} <span class="campo-ayuda">· ${a.filas.length}${a.mas ? '+' : ''} renglón(es) distinto(s) · hoja ${esc(a.hoja)}</span></summary>
+    <p class="campo-ayuda" style="margin:6px 0">${a.precio_dice
+      ? `En la planilla de costos el precio de este ítem dice ${esc(a.precio_dice)} y en el archivo anterior ${esc(a.precio_debe)}.`
+      : 'En la planilla de costos el precio de este ítem coincide: la diferencia del análisis se compensa y no se ve en el total.'}
+      Se compara con la hoja «${esc(a.hoja_ant)}» del archivo anterior (su análisis ya redeterminado).</p>
+    <table class="tabla-celdas"><tr><th>Renglón</th><th>Columna</th><th>Celda</th><th>Dice</th><th>Debería decir</th><th>Celda en el anterior</th></tr>
+      ${a.filas.map(f => f.cambios.map((c, k) => `<tr>${k === 0 ? `<td rowspan="${f.cambios.length}">${esc(f.desc || f.seccion || '—')}${f.seccion && f.desc ? ` <span class="campo-ayuda">(${esc(f.seccion)})</span>` : ''}</td>` : ''}
+        <td>${esc(c.titulo)}</td><td><b>${esc(c.celda)}</b></td><td>${esc(c.dice)}</td><td><b>${esc(c.debe)}</b></td><td>${esc(c.celda_ant)}</td></tr>`).join('')).join('')}
+    </table>${a.mas ? `<div class="campo-ayuda">… y ${a.mas} renglón(es) más.</div>` : ''}</details>`).join('')}</div>`;
+}
+
 function mostrarResultado(r) {
   const v = r.veredicto;
   const icono = { ok: '✔', parcial: '✔', menor: '⚠', error: '✖' }[v.clase];
@@ -284,7 +298,8 @@ function mostrarResultado(r) {
       h += `<div class="tarjeta obs obs-${cl}">
         <div class="obs-cabecera"><strong>${i + 1}. ${esc(x.titulo)}</strong><span class="pastilla pastilla-${cl}">${esc(x.grav)}</span></div>
         ${x.que ? `<p style="margin:8px 0">${esc(x.que)}</p>` : ''}
-        ${x.ubic.length ? `<table class="tabla-celdas"><tr><th>Hoja</th><th>Celda</th><th>Dice</th><th>Debería decir</th></tr>
+        ${x.analisis && x.analisis.length ? detalleAnalisis(x.analisis) : ''}
+        ${x.ubic.length && !(x.analisis && x.analisis.length) ? `<table class="tabla-celdas"><tr><th>Hoja</th><th>Celda</th><th>Dice</th><th>Debería decir</th></tr>
           ${x.ubic.slice(0, 12).map(u => `<tr><td>${esc(u.hoja)}</td><td><b>${esc(u.celda)}</b>${u.origen ? ' <span class="campo-ayuda">(corregir acá)</span>' : ''}</td>
             <td>${esc(u.dice)}</td><td><b>${esc(u.debe)}</b></td></tr>`).join('')}</table>
           ${x.ubic.length > 12 ? `<div class="campo-ayuda">… y ${x.ubic.length - 12} celda(s) más (están todas en el PDF).</div>` : ''}` : ''}

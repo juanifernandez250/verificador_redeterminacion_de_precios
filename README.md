@@ -1,8 +1,8 @@
 # Autocontrol de la planilla de redeterminación (versión web)
 
 Página para que las empresas controlen la planilla de una redeterminación de precios **antes de presentarla**.
-Usa exactamente los mismos controles que el verificador del organismo (ítems INDEC, VAR, análisis de precios y
-planilla de costos) y dice OK o qué celdas corregir. Se puede bajar el PDF con las observaciones y una copia del
+Usa exactamente los mismos controles que el verificador del organismo (ítems INDEC, VAR, análisis de precios,
+planilla de costos y, si se sube su Excel, la redeterminación anterior) y dice OK o qué celdas corregir. Se puede bajar el PDF con las observaciones y una copia del
 Excel con las celdas marcadas.
 
 **Todo corre en el navegador de quien la usa** (Python compilado para la web, con Pyodide): el Excel y los boletines
