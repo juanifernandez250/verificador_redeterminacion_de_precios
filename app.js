@@ -222,8 +222,6 @@ function pintarContador(t, general) {
   $('#c-avisos').textContent = fmt(t.avisos);
   $('#contador-titulo').textContent = general ? 'Planillas controladas con esta página' : 'Planillas controladas en este navegador';
   $('#contador-nota').textContent = general
-    ? 'Para este contador se envía solo el resultado (OK, con errores o con avisos). El Excel no sale de tu computadora.'
-    : 'Se cuenta cada planilla distinta que controlaste en este navegador.';
   $('#contador').hidden = false;
 }
 
