@@ -222,6 +222,8 @@ function pintarContador(t, general) {
   $('#c-avisos').textContent = fmt(t.avisos);
   $('#contador-titulo').textContent = general ? 'Planillas controladas con esta página' : 'Planillas controladas en este navegador';
   $('#contador-nota').textContent = general
+      ? ''
+    : 'Se cuenta cada planilla distinta que controlaste en este navegador.';
   $('#contador').hidden = false;
 }
 
