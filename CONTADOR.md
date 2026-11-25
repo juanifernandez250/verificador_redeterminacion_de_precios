@@ -23,3 +23,17 @@ Lo único que se envía es el resultado (ok / errores / avisos), una "huella" de
 7. En uno o dos minutos la página muestra «Planillas controladas con esta página». En la planilla de Google, la hoja «Registro» va sumando una fila por control.
 
 Si algún día cambiás el código del script, hacé **Implementar → Gestionar implementaciones → editar → Versión: nueva**, así la URL sigue siendo la misma.
+
+## Contador de visitas (oculto)
+
+Además de las planillas, la página cuenta **cuántas veces se la abre**, sin mostrarlo en pantalla. Se manda solo un código
+al azar que se genera en cada navegador (no identifica a nadie) y la versión de la página; una visita por sesión.
+
+**Cómo verlo:** abrí la planilla de Google «Contador autocontrol» (en Drive). Hay dos hojas nuevas:
+- **Resumen**: visitas totales, visitantes distintos, visitas de hoy, de los últimos 7 y 30 días, y planillas controladas.
+- **Visitas**: una fila por visita, con fecha y hora.
+
+**Si ya tenías el contador funcionando**, actualizá el script una sola vez: en la planilla, *Extensiones → Apps Script*,
+reemplazá todo por el nuevo `contador-google.gs`, guardá, y luego *Implementar → Gestionar implementaciones → ✏️ editar →
+Versión: Nueva versión → Implementar*. La URL no cambia, así que `config.js` no se toca. Las hojas «Visitas» y «Resumen»
+aparecen solas con la primera visita.

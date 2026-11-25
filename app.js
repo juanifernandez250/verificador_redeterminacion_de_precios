@@ -1,5 +1,5 @@
 /* app.js — pantalla del autocontrol. El trabajo pesado lo hace worker.js (Python en el navegador). */
-const VERSION = '2026-11-20';
+const VERSION = '2026-11-25';
 const trabajador = new Worker('worker.js?v=' + VERSION);
 let pedidos = 0;
 const esperando = {};
@@ -247,8 +247,23 @@ async function contar(cat) {
   pintarContador(g || l, !!g);
 }
 
+/* Visita oculta: una vez por sesión del navegador se manda un id anónimo al azar (no es el Excel ni datos personales)
+   y la versión de la página. No se muestra en pantalla; se ve en la hoja «Visitas» de la planilla de Google (CONTADOR.md). */
+function paramsVisita() {
+  try {
+    if (sessionStorage.getItem('visita-enviada')) return null;
+    let id = localStorage.getItem('vid');
+    if (!id) {
+      id = Array.from(crypto.getRandomValues(new Uint8Array(6))).map(b => b.toString(16).padStart(2, '0')).join('');
+      localStorage.setItem('vid', id);
+    }
+    sessionStorage.setItem('visita-enviada', '1');
+    return { visita: '1', id: id, v: VERSION };
+  } catch (e) { return null; }   // navegador sin almacenamiento: no se registra
+}
+
 async function iniciarContador() {
-  const g = await totalesGenerales(null);
+  const g = await totalesGenerales(paramsVisita());
   if (g) pintarContador(g, true);
   else {
     const l = leerLocal();
