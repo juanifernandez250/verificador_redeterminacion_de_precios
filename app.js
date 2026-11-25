@@ -1,5 +1,5 @@
 /* app.js — pantalla del autocontrol. El trabajo pesado lo hace worker.js (Python en el navegador). */
-const VERSION = '2026-11-25b';
+const VERSION = '2026-11-25c';
 const trabajador = new Worker('worker.js?v=' + VERSION);
 let pedidos = 0;
 const esperando = {};
@@ -203,8 +203,8 @@ async function huella(buf) {
 
 function categoria(v) {
   if (v.clase === 'error') return 'errores';
-  if (v.clase === 'menor' || v.clase === 'parcial' || (v.n && v.n.AVISO)) return 'avisos';
-  return 'ok';
+  if (v.clase === 'menor') return 'avisos';   // diferencias menores para revisar
+  return 'ok';                                // 'ok' y 'parcial' (sin errores); los avisos sueltos no impiden el OK
 }
 
 function leerLocal() {

@@ -87,7 +87,7 @@ function crearResumen_(libro) {
     ['Visitas de hoy', '=COUNTIF(INDEX(INT(Visitas!A2:A),0),TODAY())'],
     ['Visitas últimos 7 días', '=COUNTIF(Visitas!A2:A,">="&(NOW()-7))'],
     ['Visitas últimos 30 días', '=COUNTIF(Visitas!A2:A,">="&(NOW()-30))'],
-    ['Planillas controladas (sin repetidas)', '=COUNTA(Registro!A2:A)']
+    ['Planillas controladas (sin repetidas)', '=IFERROR(COUNTUNIQUE(FILTER(Registro!B2:B&"|"&Registro!C2:C,Registro!B2:B<>"")),0)']
   ]);
   r.getRange('A1:A6').setFontWeight('bold');
   r.setColumnWidth(1, 280);
