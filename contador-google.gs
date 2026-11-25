@@ -20,6 +20,7 @@ function doGet(e) {
     } finally {
       lock.releaseLock();
     }
+    registrarHallazgos_(p);
   }
   return ContentService.createTextOutput(JSON.stringify(totales_(hoja)))
     .setMimeType(ContentService.MimeType.JSON);
@@ -90,4 +91,29 @@ function crearResumen_(libro) {
   ]);
   r.getRange('A1:A6').setFontWeight('bold');
   r.setColumnWidth(1, 280);
+}
+
+/** Una fila por error/aviso encontrado: fecha, gravedad (E=error, M=menor, A=aviso), título del control. Hoja «Hallazgos». */
+function registrarHallazgos_(p) {
+  const filas = String(p.e || '').slice(0, 2000).split('|').map(function (t) {
+    const i = t.indexOf(':');
+    return i === 1 && t.length > 2 ? [new Date(), t.charAt(0).replace(/[^EMA]/g, ''), t.slice(2)] : null;
+  }).filter(function (f) { return f && f[1]; });
+  if (!filas.length) return;
+  const libro = SpreadsheetApp.getActiveSpreadsheet();
+  let hoja = libro.getSheetByName('Hallazgos');
+  if (!hoja) {
+    hoja = libro.insertSheet('Hallazgos');
+    hoja.appendRow(['Fecha', 'Gravedad (E=error, M=menor, A=aviso)', 'Control']);
+    hoja.setFrozenRows(1);
+    // Ranking: cuántas veces apareció cada hallazgo (se arma solo)
+    hoja.getRange('E1').setFormula('=QUERY(A2:C,"select C, B, count(C) where C is not null group by C, B order by count(C) desc label C \'Control\', B \'Gravedad\', count(C) \'Veces\'",0)');
+  }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    hoja.getRange(hoja.getLastRow() + 1, 1, filas.length, 3).setValues(filas);
+  } finally {
+    lock.releaseLock();
+  }
 }

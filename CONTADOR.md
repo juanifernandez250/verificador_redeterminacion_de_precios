@@ -37,3 +37,9 @@ al azar que se genera en cada navegador (no identifica a nadie) y la versión de
 reemplazá todo por el nuevo `contador-google.gs`, guardá, y luego *Implementar → Gestionar implementaciones → ✏️ editar →
 Versión: Nueva versión → Implementar*. La URL no cambia, así que `config.js` no se toca. Las hojas «Visitas» y «Resumen»
 aparecen solas con la primera visita.
+
+## Qué errores y avisos aparecen
+
+Cada control se manda además con la **gravedad y el título** de cada error/aviso encontrado (sin celdas, valores, obra ni empresa).
+Se ve en la hoja **Hallazgos** de la planilla de Google: a la izquierda una fila por hallazgo; desde la columna **E**, un ranking
+con cuántas veces apareció cada uno. Para activarlo, actualizá el script igual que arriba (pegar `contador-google.gs` y *Nueva versión*).

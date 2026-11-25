@@ -1,5 +1,5 @@
 /* app.js — pantalla del autocontrol. El trabajo pesado lo hace worker.js (Python en el navegador). */
-const VERSION = '2026-11-25';
+const VERSION = '2026-11-25b';
 const trabajador = new Worker('worker.js?v=' + VERSION);
 let pedidos = 0;
 const esperando = {};
@@ -184,7 +184,7 @@ async function analizar() {
     res.segundos_total = Math.round((performance.now() - t0) / 1000);
     ocultarProgreso();
     mostrarResultado(res);
-    contar(categoria(res.veredicto));
+    contar(categoria(res.veredicto), res.items);
   } catch (e) { mostrarError(e.message); }
 }
 
@@ -235,7 +235,7 @@ async function totalesGenerales(params) {
   } catch (e) { return null; }
 }
 
-async function contar(cat) {
+async function contar(cat, items) {
   const l = leerLocal();
   const clave = cat + ':' + HUELLA;
   if (!HUELLA || !l.vistos.includes(clave)) {          // la misma planilla con el mismo resultado no suma dos veces
@@ -243,7 +243,9 @@ async function contar(cat) {
     if (HUELLA) l.vistos = l.vistos.concat(clave).slice(-500);
     try { localStorage.setItem('contador', JSON.stringify(l)); } catch (e) { /* navegador sin almacenamiento */ }
   }
-  const g = await totalesGenerales({ r: cat, h: HUELLA, v: VERSION });
+  // Qué errores/avisos aparecieron: solo gravedad y título genérico del control (nunca celdas, valores ni nombres de obra)
+  const e = (items || []).slice(0, 20).map(x => String(x.gravedad || '').charAt(0) + ':' + String(x.titulo || '').replace(/[|\d]+/g, '').trim().slice(0, 80)).join('|');
+  const g = await totalesGenerales({ r: cat, h: HUELLA, v: VERSION, e: e });
   pintarContador(g || l, !!g);
 }
 
